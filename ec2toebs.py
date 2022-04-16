@@ -17,3 +17,18 @@ for volume in ec2.volumes.all():
             Resources=[volume.id],
             Tags=[{'Key':'Name','Value':name['Value']}]
 )
+
+#Sync EC2 Tag Project with EBS Tag Project
+
+print ("Loop for TAG Project")
+for volume in ec2.volumes.all():
+  print(volume.id)
+  for attachment in volume.attachments:
+    print(attachment['InstanceId'])
+    for name in ec2.Instance(attachment['InstanceId']).tags:
+      if name['Key'] == 'Project':
+          tag = volume.create_tags(
+          DryRun=False,
+          Resources=[volume.id],
+          Tags=[{'Key':'Project','Value':name['Value']}]
+)
